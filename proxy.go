@@ -2,14 +2,12 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 	"strings"
 	"sync"
@@ -99,10 +97,9 @@ func (lb *LoadBalancer) Next() *UpstreamNode {
 
 // ProxyHandler 代理服务处理器
 type ProxyHandler struct {
-	cfg          *Config
-	lb           *LoadBalancer
-	client       *http.Client
-	reverseProxy *httputil.ReverseProxy
+	cfg    *Config
+	lb     *LoadBalancer
+	client *http.Client
 }
 
 // NewProxyHandler 创建代理处理器

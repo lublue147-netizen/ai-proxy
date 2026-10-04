@@ -48,7 +48,7 @@ jobs:
           CGO_ENABLED: 0
         run: |
           mkdir -p dist/${{ matrix.archive_name }}
-          go build -trimpath -ldflags="-s -w -X 'main.version=${{ github.ref_name }}'" -o dist/${{ matrix.archive_name }}/ai-proxy.exe .
+          go build -v -trimpath -ldflags="-s -w" -o dist/${{ matrix.archive_name }}/ai-proxy.exe .
           cp config.example.yaml dist/${{ matrix.archive_name }}/
           cp start.bat dist/${{ matrix.archive_name }}/
           cp README.md dist/${{ matrix.archive_name }}/
