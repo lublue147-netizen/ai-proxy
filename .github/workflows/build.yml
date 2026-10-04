@@ -16,6 +16,7 @@ jobs:
     name: Build Windows Binaries
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         include:
           - goos: windows
@@ -36,7 +37,7 @@ jobs:
           check-latest: true
 
       - name: Download Go dependencies
-        run: go mod download
+        run: go mod tidy
 
       - name: Build binary for ${{ matrix.goos }}-${{ matrix.goarch }}
         env:
