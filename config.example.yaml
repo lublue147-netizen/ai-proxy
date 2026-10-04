@@ -1,0 +1,39 @@
+# AI Proxy 本地负载均衡代理配置文件
+# 复制此文件为 config.yaml 后即可修改运行
+
+server:
+  host: "127.0.0.1"    # 本地监听地址（若需要局域网其他设备访问可设为 0.0.0.0）
+  port: 8080           # 本地监听端口
+  verbose: true        # 是否在控制台打印详细转发与轮询日志
+  retry_count: 2       # 当某个节点网络异常或 502/503 时，自动尝试下一个节点的次数
+  client_key: ""       # 可选：如果希望本地客户端访问此代理也需要认证，可填写此项，留空则不验证
+
+# 上游 OpenAI 兼容接口列表
+# 代理会按照权重（平滑加权轮询）在这些节点间分摊请求流量
+upstreams:
+  - name: "openai-official"
+    base_url: "https://api.openai.com/v1"
+    weight: 1                  # 轮询权重
+    enabled: true              # 是否启用该节点
+    headers:
+      # 覆盖写认证 Header（当客户端发起请求时，代理会将此 Header 替换/注入）
+      Authorization: "Bearer sk-proj-your-openai-key-here"
+      # 你也可以覆盖或追加其他 Header，例如：
+      # X-Custom-Header: "proxy-node-1"
+
+  - name: "deepseek-api"
+    base_url: "https://api.deepseek.com/v1"
+    weight: 1
+    enabled: true
+    headers:
+      Authorization: "Bearer sk-your-deepseek-key-here"
+
+  - name: "backup-gateway"
+    base_url: "https://api.openai-sb.com/v1"
+    weight: 2                  # 权重更高，分到的请求更多
+    enabled: true
+    headers:
+      Authorization: "Bearer sb-your-key-here"
+      # 支持覆盖任意 Header
+      HTTP-Referer: "https://github.com"
+      X-Title: "AI-Proxy-Local"
