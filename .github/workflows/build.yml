@@ -37,7 +37,9 @@ jobs:
           check-latest: true
 
       - name: Download Go dependencies
-        run: go mod tidy
+        run: |
+          rm -f go.sum
+          go mod tidy
 
       - name: Build binary for ${{ matrix.goos }}-${{ matrix.goarch }}
         env:
